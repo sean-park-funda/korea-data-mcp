@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.sean-park-funda/korea-data-mcp",
+  "title": "Korea Public Data",
+  "description": "Korea tourism (KR/EN), bus stops and climate normals for agents. No install.",
+  "version": "0.1.0",
+  "repository": {
+    "url": "https://github.com/sean-park-funda/korea-data-mcp",
+    "source": "github"
+  },
+  "websiteUrl": "https://korea-data-mcp.picks-site.workers.dev",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://korea-data-mcp.picks-site.workers.dev/mcp"
+    }
+  ]
+}

@@ -17,6 +17,8 @@ Model Context Protocol 로 노출합니다. `npx` 도, API 키 발급도 필요 
 
 Streamable HTTP 방식입니다.
 
+공식 MCP 레지스트리에도 등재돼 있습니다 — `io.github.sean-park-funda/korea-data-mcp`
+
 ## 도구
 
 | 도구 | 하는 일 |
