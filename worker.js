@@ -205,23 +205,26 @@ const INDEXNOW_KEY = 'a7f3c1e9b2d84056af1c93e7d5б0428'.replace('б','b');
 
 const LANDING = `<!doctype html><html lang="ko">
 <meta charset="utf-8">
-<title>한국 공공데이터 MCP 서버 — 설치 없는 원격 MCP (관광·버스·기상)</title>
-<meta name="description" content="AI 에이전트가 한국 공공데이터를 바로 쓰는 원격 MCP 서버. 한국관광공사 국문·영문 관광정보, 국토교통부 버스 정류소, 기상청 평년값. 설치 없이 URL 하나로 연결합니다.">
+<title>전국 버스 정류소·기상 평년값 MCP 서버 — 설치 없는 한국 공공데이터</title>
+<meta name="description" content="전국 138개 도시 버스 정류소와 1991~2020 기상 평년값을 AI 에이전트가 바로 조회하는 원격 MCP 서버. 전국 단위 관광정보(국문·영문)도 함께. 설치 없이 URL 하나로 연결합니다.">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="canonical" href="${ORIGIN}/">
-<meta property="og:title" content="한국 공공데이터 MCP 서버 — 설치 없는 원격 MCP">
-<meta property="og:description" content="관광(국문·영문)·버스 정류소·기상 평년값을 에이전트가 바로 조회. 설치 없이 URL 하나.">
+<meta property="og:title" content="전국 버스 정류소·기상 평년값 MCP 서버">
+<meta property="og:description" content="전국 138개 도시 버스 정류소 + 30년 기상 평년값 + 전국 관광정보. 설치 없이 URL 하나.">
 <meta property="og:url" content="${ORIGIN}/">
 <meta property="og:type" content="website">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"korea-data-mcp","applicationCategory":"DeveloperApplication","operatingSystem":"Any","description":"한국 공공데이터(관광 국문·영문, 버스 정류소, 기상 평년값)를 제공하는 원격 MCP 서버","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"url":"${ORIGIN}/"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"korea-data-mcp","applicationCategory":"DeveloperApplication","operatingSystem":"Any","description":"전국 138개 도시 버스 정류소, 1991~2020 기상 평년값, 전국 관광정보(국문·영문)를 제공하는 원격 MCP 서버","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"url":"${ORIGIN}/"}</script>
 <style>body{max-width:680px;margin:0 auto;padding:24px;font:16px/1.7 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;color:#1a1c1b}
 code,pre{background:#f4f6f5;border-radius:6px}code{padding:2px 5px}pre{padding:12px;overflow-x:auto;font-size:.86rem}
 h1{font-size:1.5rem;line-height:1.35}h2{font-size:1.1rem;margin-top:30px}table{border-collapse:collapse;width:100%;font-size:.9rem}
 th,td{border:1px solid #dde3e0;padding:7px 9px;text-align:left}th{background:#f6f8f7}
 .v{background:#eef6f2;border-left:4px solid #0b6b53;padding:12px 14px;font-weight:600;border-radius:0 6px 6px 0}
 footer{margin-top:36px;padding-top:16px;border-top:1px solid #dde3e0;color:#5b6360;font-size:.85rem}</style>
-<h1>한국 공공데이터 MCP 서버</h1>
-<p class="v">설치가 필요 없습니다. URL 하나를 등록하면 AI 에이전트가 한국 정부 공개 데이터를 바로 조회합니다.</p>
+<h1>전국 버스 정류소 · 기상 평년값 MCP 서버</h1>
+<p class="v">설치가 필요 없습니다. URL 하나면 에이전트가 <b>전국 138개 도시 버스 정류소</b>와
+<b>30년 기상 평년값</b>을 바로 조회합니다. 전국 단위 관광정보(국문·영문)도 함께 들어 있습니다.</p>
+<p>다른 한국 MCP 서버들은 대체로 <b>도시 하나</b>(서울·부산)나 <b>분야 하나</b>(숙박·주식·부동산)를 다룹니다.
+이 서버는 <b>전국 단위</b>이고, 버스 정류소와 기상 평년값은 지금 다른 데서 찾기 어렵습니다.</p>
 
 <h2>연결</h2>
 <pre>{
