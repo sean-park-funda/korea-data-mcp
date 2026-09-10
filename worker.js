@@ -10,6 +10,7 @@
  */
 const NAME = 'korea-data-mcp';
 const VERSION = '0.1.0';
+const BUILD = '__BUILD__';   // 배포 때 고유값으로 치환된다 (구버전 오판 방지)
 const PROTOCOL = '2025-06-18';
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), {
@@ -169,11 +170,37 @@ const TOOLS = [
    */
 ];
 
+/* ── 계측 ────────────────────────────────────────────────
+
+  Cloudflare 기본 요청 수는 **우리 자신의 테스트·배포 호출까지 센다.**
+  그 숫자로 "외부 사용 흔적"을 판정하면 자기 트래픽을 성과로 착각하게 된다
+  (인포허브가 합계만 보고 붕괴를 못 본 것과 같은 종류의 실수다).
+  → 여기서 **우리 것과 남의 것을 구분해서** 직접 기록한다.
+  우리 도구는 `X-Rlab-Self: 1` 을 붙인다. 그게 없으면 외부다.
+*/
+function record(env, request, { method, tool, ok }) {
+  if (!env.AE) return;
+  const self = request.headers.get('x-rlab-self') === '1' ? 1 : 0;
+  const ua = (request.headers.get('user-agent') || '').slice(0, 80);
+  // 클라이언트 식별은 IP 자체가 아니라 **해시 접두어**만 남긴다 (누군지는 몰라도 몇 명인지는 센다)
+  const ip = request.headers.get('cf-connecting-ip') || '';
+  let h = 0; for (let i = 0; i < ip.length; i++) h = (h * 31 + ip.charCodeAt(i)) >>> 0;
+  const visitor = self ? 'self' : 'v' + h.toString(36);
+  try {
+    env.AE.writeDataPoint({
+      blobs: [method || '', tool || '', visitor, ua, request.cf?.country || ''],
+      doubles: [self, ok ? 1 : 0],
+      indexes: [visitor],
+    });
+  } catch { /* 계측 실패가 서비스를 막지 않는다 */ }
+}
+
 /* ── MCP 처리 ────────────────────────────────────────────── */
 
-async function handleRpc(env, msg) {
+async function handleRpc(env, msg, request) {
   const { id, method, params } = msg;
   if (method === 'initialize') {
+    record(env, request, { method, tool: '', ok: true });
     return rpcOk(id, {
       protocolVersion: PROTOCOL,
       capabilities: { tools: { listChanged: false } },
@@ -184,6 +211,7 @@ async function handleRpc(env, msg) {
   if (method === 'notifications/initialized' || method?.startsWith('notifications/')) return new Response(null, { status: 202 });
   if (method === 'ping') return rpcOk(id, {});
   if (method === 'tools/list') {
+    record(env, request, { method, tool: '', ok: true });
     return rpcOk(id, { tools: TOOLS.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) });
   }
   if (method === 'tools/call') {
@@ -191,8 +219,10 @@ async function handleRpc(env, msg) {
     if (!tool) return rpcErr(id, -32602, `알 수 없는 도구: ${params?.name}`);
     try {
       const result = await tool.run(env, params.arguments || {});
+      record(env, request, { method, tool: tool.name, ok: true });
       return rpcOk(id, { content: [{ type: 'text', text: JSON.stringify(result, null, 1) }] });
     } catch (e) {
+      record(env, request, { method, tool: tool.name, ok: false });
       // 도구 실패는 프로토콜 오류가 아니라 **결과 안의 오류**로 돌려준다 (MCP 규격)
       return rpcOk(id, { content: [{ type: 'text', text: `오류: ${e.message}` }], isError: true });
     }
@@ -259,7 +289,7 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid #dde3e0;color:#5b63
 <p>한국관광공사(국문·영문 관광정보) · 국토교통부 TAGO(버스 정류소) · 기상청 API허브(평년값).
 모두 공공데이터포털 및 각 기관의 공개 API 입니다.</p>
 
-<footer><p>이 서버는 <b>박성준 님의 AI 비서</b>가 만들고 운영합니다. 조회 전용이며 데이터를 저장하지 않습니다.</p>
+<footer><p><b>액슬컨설팅팀</b>이 만들고 운영합니다. 조회 전용이며 데이터를 저장하지 않습니다.</p>
 <p><a href="${ORIGIN}/health">상태 확인</a></p></footer>`;
 
 const ROBOTS = `User-agent: *
@@ -288,12 +318,12 @@ export default {
       let msg; try { msg = await request.json(); } catch { return rpcErr(null, -32700, '파싱 오류'); }
       if (Array.isArray(msg)) {
         const out = [];
-        for (const m of msg) { const r = await handleRpc(env, m); if (r.status !== 202) out.push(await r.json()); }
+        for (const m of msg) { const r = await handleRpc(env, m, request); if (r.status !== 202) out.push(await r.json()); }
         return json(out);
       }
-      return handleRpc(env, msg);
+      return handleRpc(env, msg, request);
     }
-    if (url.pathname === '/health') return json({ ok: true, name: NAME, version: VERSION, tools: TOOLS.length });
+    if (url.pathname === '/health') return json({ ok: true, name: NAME, version: VERSION, build: BUILD, tools: TOOLS.length });
     if (url.pathname === '/robots.txt') return new Response(ROBOTS, { headers: { 'content-type': 'text/plain; charset=utf-8' } });
     if (url.pathname === '/sitemap.xml') return new Response(SITEMAP, { headers: { 'content-type': 'application/xml; charset=utf-8' } });
     // IndexNow 소유권 확인 파일
