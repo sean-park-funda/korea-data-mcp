@@ -289,6 +289,11 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid #dde3e0;color:#5b63
 <p>한국관광공사(국문·영문 관광정보) · 국토교통부 TAGO(버스 정류소) · 기상청 API허브(평년값).
 모두 공공데이터포털 및 각 기관의 공개 API 입니다.</p>
 
+<h2>커스텀 MCP 서버가 필요하신가요</h2>
+<p>공개 API·사내 시스템·데이터베이스를 <b>에이전트가 쓸 수 있는 원격 MCP 서버</b>로 만들어 드립니다.
+설치 없는 Streamable HTTP 방식, Cloudflare Workers 배포, 공식 레지스트리 등재까지 진행합니다.
+<b>이 서버가 곧 작업 샘플입니다.</b></p>
+<p>문의: <a href="https://github.com/sean-park-funda/korea-data-mcp/issues/new">GitHub 이슈로 남겨 주세요</a></p>
 <footer><p><b>액슬컨설팅팀</b>이 만들고 운영합니다. 조회 전용이며 데이터를 저장하지 않습니다.</p>
 <p><a href="${ORIGIN}/health">상태 확인</a></p></footer>`;
 
